@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRM Loteamentos Cícero Alves</title>
   <style>
-    /* ======= ESTILO GERAL ======= */
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #e0f7e9, #c8e6c9);
@@ -31,7 +30,6 @@
       transform: translateY(-3px);
     }
 
-    /* ======= FOTO E CABEÇALHO ======= */
     .profile {
       text-align: center;
       margin-bottom: 20px;
@@ -59,7 +57,6 @@
       margin-top: -5px;
     }
 
-    /* ======= CAMPOS ======= */
     label {
       display: block;
       font-weight: 600;
@@ -68,7 +65,7 @@
       margin-bottom: 4px;
     }
 
-    input, textarea {
+    input, select, textarea {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid #ccc;
@@ -78,7 +75,7 @@
       transition: 0.2s;
     }
 
-    input:focus, textarea:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: #25d366;
       box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.2);
       outline: none;
@@ -89,7 +86,6 @@
       resize: none;
     }
 
-    /* ======= BOTÃO ======= */
     button {
       width: 100%;
       margin-top: 18px;
@@ -147,41 +143,61 @@
       <input type="tel" id="telefone" placeholder="(DDD) 99999-9999" required>
 
       <label>Interesse:</label>
-      <input type="text" id="interesse" placeholder="Ex: Lote 12 - Sol Nascente" required>
+      <select id="interesse" required>
+        <option value="">Selecione o loteamento</option>
+        <option value="Loteamento Colinas do Sol">Loteamento Colinas do Sol</option>
+        <option value="Residencial Castelã - Roselândia">Residencial Castelã - Roselândia</option>
+      </select>
 
-      <label>Mensagem / Feedback:</label>
+      <label>Mensagem / Observação:</label>
       <textarea id="feedback" placeholder="Conte-nos o que procura..."></textarea>
 
-      <button type="button" onclick="enviarWhatsApp()">💬 Salvar e Enviar Ordem</button>
+      <button type="button" onclick="enviarLead()">💬 Salvar e Enviar Ordem</button>
 
       <footer>© 2025 Cícero Alves - CRM de Loteamentos</footer>
     </form>
   </div>
 
   <script>
-    function enviarWhatsApp() {
+    function enviarLead() {
       const nome = document.getElementById("nome").value.trim();
       const email = document.getElementById("email").value.trim();
       const telefone = document.getElementById("telefone").value.trim();
       const interesse = document.getElementById("interesse").value.trim();
-      const feedback = document.getElementById("feedback").value.trim();
+      const observacao = document.getElementById("feedback").value.trim();
 
       if (!nome || !telefone || !interesse) {
         alert("Por favor, preencha os campos obrigatórios!");
         return;
       }
 
-      const numeroVendedor = "5511992854112"; // WhatsApp do Cícero Alves
-      
-      const mensagem = `*Novo Contato CRM - Loteamentos Cícero Alves*%0A
- *Nome:* ${nome}%0A
- *E-mail:* ${email}%0A
- *Telefone:* ${telefone}%0A
- *Interesse:* ${interesse}%0A
- *Mensagem:* ${feedback}`;
+      const dados = {
+        nome: nome,
+        email: email,
+        telefone: telefone,
+        interesse: interesse,
+        observacao: observacao
+      };
 
-      const url = `https://wa.me/${numeroVendedor}?text=${mensagem}`;
-      window.open(url, "_blank");
+      // URL do seu Web App
+      fetch("https://script.google.com/macros/s/AKfycbz7ZS_nP1cBWl8vNHo6fzx3BdR5VcPIU7SN4XOUzixs3JtDCFOivP-mq1n_nS08BmNX_Q/exec", {
+        method: "POST",
+        body: JSON.stringify(dados),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.status === "ok"){
+          alert("Lead enviado com sucesso!");
+
+          const numeroVendedor = "5511992854112";
+          const mensagem = `*Novo Contato CRM*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A🏘️ *Interesse:* ${interesse}%0A💬 *Mensagem:* ${observacao}`;
+          window.open(`https://wa.me/${numeroVendedor}?text=${mensagem}`, "_blank");
+
+          document.getElementById("crmForm").reset();
+        }
+      })
+      .catch(err => alert("Erro ao enviar lead: " + err));
     }
   </script>
 </body>
