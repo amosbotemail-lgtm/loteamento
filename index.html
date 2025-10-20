@@ -51,44 +51,43 @@
   </div>
 
   <script>
-   function enviarLead() {
-  const nome = document.getElementById("nome").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const telefone = document.getElementById("telefone").value.trim();
-  const interesse = document.getElementById("interesse").value.trim();
-  const observacao = document.getElementById("feedback").value.trim();
+    function enviarLead() {
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
+      const interesse = document.getElementById("interesse").value.trim();
+      const observacao = document.getElementById("feedback").value.trim();
 
-  if (!nome || !telefone || !interesse) {
-    alert("Por favor, preencha os campos obrigatórios!");
-    return;
-  }
+      if (!nome || !telefone || !interesse) {
+        alert("Por favor, preencha os campos obrigatórios!");
+        return;
+      }
 
-  const dados = { nome, email, telefone, interesse, observacao };
-  const url = "https://script.google.com/macros/s/AKfycbw50_alBBPydGyI4mnecwLO5EIDX7hG0JwcAmXqyAgxn5Wc2odAJHl4rUyiQveVSRy8xg/exec";
-  const script = document.createElement("script");
-  script.src = url + "?callback=callback&dados=" + encodeURIComponent(JSON.stringify(dados));
-  document.body.appendChild(script);
-}
+      const dados = { nome, email, telefone, interesse, observacao };
+      const url = "https://script.google.com/macros/s/AKfycbw50_alBBPydGyI4mnecwLO5EIDX7hG0JwcAmXqyAgxn5Wc2odAJHl4rUyiQveVSRy8xg/exec";
 
-// Função callback chamada pelo Apps Script
-function callback(res) {
-  if (res.status === "ok") {
-    alert("Lead enviado com sucesso!");
-    const nome = document.getElementById("nome").value.trim();
-    const telefone = document.getElementById("telefone").value.trim();
-    const interesse = document.getElementById("interesse").value.trim();
-    const observacao = document.getElementById("feedback").value.trim();
+      const script = document.createElement("script");
+      script.src = `${url}?callback=callback&dados=${encodeURIComponent(JSON.stringify(dados))}`;
+      document.body.appendChild(script);
+    }
 
-    const numeroVendedor = "5511992854112";
-    const mensagem = `*Novo Contato CRM*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A🏘️ *Interesse:* ${interesse}%0A💬 *Mensagem:* ${observacao}`;
-    window.open(`https://wa.me/${numeroVendedor}?text=${mensagem}`, "_blank");
+    function callback(res) {
+      if (res.status === "ok") {
+        alert("Lead enviado com sucesso!");
+        const nome = document.getElementById("nome").value.trim();
+        const telefone = document.getElementById("telefone").value.trim();
+        const interesse = document.getElementById("interesse").value.trim();
+        const observacao = document.getElementById("feedback").value.trim();
 
-    document.getElementById("crmForm").reset();
-  } else {
-    alert("Erro: " + res.mensagem);
-  }
-}
+        const numeroVendedor = "5511992854112";
+        const mensagem = `*Novo Contato CRM*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A🏘️ *Interesse:* ${interesse}%0A💬 *Mensagem:* ${observacao}`;
+        window.open(`https://wa.me/${numeroVendedor}?text=${mensagem}`, "_blank");
 
+        document.getElementById("crmForm").reset();
+      } else {
+        alert("Erro: " + res.mensagem);
+      }
+    }
   </script>
 </body>
 </html>
