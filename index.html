@@ -51,41 +51,44 @@
   </div>
 
   <script>
-    async function enviarLead() {
-      const nome = document.getElementById("nome").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const telefone = document.getElementById("telefone").value.trim();
-      const interesse = document.getElementById("interesse").value.trim();
-      const observacao = document.getElementById("feedback").value.trim();
+   function enviarLead() {
+  const nome = document.getElementById("nome").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const telefone = document.getElementById("telefone").value.trim();
+  const interesse = document.getElementById("interesse").value.trim();
+  const observacao = document.getElementById("feedback").value.trim();
 
-      if (!nome || !telefone || !interesse) {
-        alert("Por favor, preencha os campos obrigatórios!");
-        return;
-      }
+  if (!nome || !telefone || !interesse) {
+    alert("Por favor, preencha os campos obrigatórios!");
+    return;
+  }
 
-      const dados = { nome, email, telefone, interesse, observacao };
+  const dados = { nome, email, telefone, interesse, observacao };
+  const url = "https://script.google.com/macros/s/SEU_ID_DO_SCRIPT/exec";
+  const script = document.createElement("script");
+  script.src = url + "?callback=callback&dados=" + encodeURIComponent(JSON.stringify(dados));
+  document.body.appendChild(script);
+}
 
-      try {
-        // URL do seu Web App (publicado como "Qualquer pessoa, mesmo anônima")
-        const response = await fetch("https://script.google.com/macros/s/AKfycbzWZcGXmxi_uOiI9rRMNxablR9joqTy-CxqR4-i6bHBzernpaedDqDslLIE9PI5mhMk3g/exec", {
-          method: "POST",
-          mode: "no-cors", // ← necessário para HtmlService
-          body: JSON.stringify(dados),
-          headers: { "Content-Type": "application/json" }
-        });
+// Função callback chamada pelo Apps Script
+function callback(res) {
+  if (res.status === "ok") {
+    alert("Lead enviado com sucesso!");
+    const nome = document.getElementById("nome").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const interesse = document.getElementById("interesse").value.trim();
+    const observacao = document.getElementById("feedback").value.trim();
 
-        // Como usamos no-cors, não conseguimos ler a resposta JSON do fetch.
-        // Então apenas abrimos o WhatsApp e limpamos o form:
-        alert("Lead enviado com sucesso!");
-        const numeroVendedor = "5511992854112";
-        const mensagem = `*Novo Contato CRM*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A🏘️ *Interesse:* ${interesse}%0A💬 *Mensagem:* ${observacao}`;
-        window.open(`https://wa.me/${numeroVendedor}?text=${mensagem}`, "_blank");
-        document.getElementById("crmForm").reset();
+    const numeroVendedor = "5511992854112";
+    const mensagem = `*Novo Contato CRM*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A🏘️ *Interesse:* ${interesse}%0A💬 *Mensagem:* ${observacao}`;
+    window.open(`https://wa.me/${numeroVendedor}?text=${mensagem}`, "_blank");
 
-      } catch (err) {
-        alert("Erro ao enviar lead: " + err);
-      }
-    }
+    document.getElementById("crmForm").reset();
+  } else {
+    alert("Erro: " + res.mensagem);
+  }
+}
+
   </script>
 </body>
 </html>
