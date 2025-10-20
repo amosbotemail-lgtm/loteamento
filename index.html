@@ -64,7 +64,7 @@
       }
 
       const dados = { nome, email, telefone, interesse, observacao };
-      const url = "https://script.google.com/macros/s/AKfycbw50_alBBPydGyI4mnecwLO5EIDX7hG0JwcAmXqyAgxn5Wc2odAJHl4rUyiQveVSRy8xg/exec";
+      const url = "https://script.google.com/macros/s/AKfycbwYtcNsgKQLlyoBgRSfV05ChH5WbUKsDA9kldwLwhejNoQUWuEYUJAhi2R-yAoRQl9eRA/exec";
 
       const script = document.createElement("script");
       script.src = `${url}?callback=callback&dados=${encodeURIComponent(JSON.stringify(dados))}`;
