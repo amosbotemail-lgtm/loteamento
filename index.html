@@ -64,32 +64,28 @@
       }
 
       const dados = { nome, email, telefone, interesse, observacao };
-      const url = "https://script.google.com/macros/s/AKfycbz0Fyh73DCjaZxhSgv8qFNTsasrG3i5SKMAKbdNefB2AQvO9DQwhpdzrCJ9ewDpxwNpog/exec";
+      const url = "https://script.google.com/macros/s/AKfycbwYKqBepcHQAPU6IfxTs-ZFhzdENt5VZ14Z-tNaZNuYyU2POsiHh5lMfLy_tu70Wo9HOA/exec";
 
-      // JSONP via <script> + callback
-      const script = document.createElement("script");
-      script.src = `${url}?callback=callback&dados=${encodeURIComponent(JSON.stringify(dados))}`;
-      document.body.appendChild(script);
-    }
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify(dados),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.status === "ok"){
+          alert("Lead enviado com sucesso!");
 
-    // Função callback chamada pelo Apps Script
-    function callback(res) {
-      if (res.status === "ok") {
-        alert("Lead enviado com sucesso!");
+          const numeroVendedor = "5511992854112";
+          const mensagem = `*Novo Contato CRM*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A🏘️ *Interesse:* ${interesse}%0A💬 *Mensagem:* ${observacao}`;
+          window.open(`https://wa.me/${numeroVendedor}?text=${mensagem}`, "_blank");
 
-        const nome = document.getElementById("nome").value.trim();
-        const telefone = document.getElementById("telefone").value.trim();
-        const interesse = document.getElementById("interesse").value.trim();
-        const observacao = document.getElementById("feedback").value.trim();
-
-        const numeroVendedor = "5511992854112";
-        const mensagem = `*Novo Contato CRM*%0A👤 *Nome:* ${nome}%0A📱 *Telefone:* ${telefone}%0A🏘️ *Interesse:* ${interesse}%0A💬 *Mensagem:* ${observacao}`;
-        window.open(`https://wa.me/${numeroVendedor}?text=${mensagem}`, "_blank");
-
-        document.getElementById("crmForm").reset();
-      } else {
-        alert("Erro: " + res.mensagem);
-      }
+          document.getElementById("crmForm").reset();
+        } else {
+          alert("Erro: " + res.mensagem);
+        }
+      })
+      .catch(err => alert("Erro ao enviar lead: " + err));
     }
   </script>
 </body>
