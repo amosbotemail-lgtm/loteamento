@@ -64,16 +64,19 @@
       }
 
       const dados = { nome, email, telefone, interesse, observacao };
-      const url = "https://script.google.com/macros/s/AKfycbwYtcNsgKQLlyoBgRSfV05ChH5WbUKsDA9kldwLwhejNoQUWuEYUJAhi2R-yAoRQl9eRA/exec";
+      const url = "https://script.google.com/macros/s/SEU_ID_DO_SCRIPT/exec";
 
+      // JSONP via <script> + callback
       const script = document.createElement("script");
       script.src = `${url}?callback=callback&dados=${encodeURIComponent(JSON.stringify(dados))}`;
       document.body.appendChild(script);
     }
 
+    // Função callback chamada pelo Apps Script
     function callback(res) {
       if (res.status === "ok") {
         alert("Lead enviado com sucesso!");
+
         const nome = document.getElementById("nome").value.trim();
         const telefone = document.getElementById("telefone").value.trim();
         const interesse = document.getElementById("interesse").value.trim();
